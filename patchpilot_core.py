@@ -158,9 +158,17 @@ def make_llm():
                   timeout=NOSANA_TIMEOUT, max_retries=0)
 
 
+NON_CHAT_HINTS = ("embed", "rerank")
+
+
+def chat_models(ids):
+    """Drop embedding/reranking models, which cannot generate a repair."""
+    return [i for i in ids if not any(h in i.lower() for h in NON_CHAT_HINTS)]
+
+
 def list_models(llm=None):
     llm = llm or make_llm()
-    return [m.id for m in llm.models.list().data]
+    return chat_models([m.id for m in llm.models.list().data])
 
 
 def call_model(llm, model, messages):

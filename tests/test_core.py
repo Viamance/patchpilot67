@@ -103,6 +103,11 @@ def test_extract_json_rejects_prose():
         core.extract_json("Sorry, I cannot help with that.")
 
 
+def test_embedding_models_are_not_offered():
+    ids = ["nvidia/nemotron-3-embed-1b", "qwen/qwen3.8-27b", "some/reranker-rerank"]
+    assert core.chat_models(ids) == ["qwen/qwen3.8-27b"]
+
+
 def test_verdict_mapping():
     assert core.baseline_verdict(0) == core.NO_FAILURE
     assert core.baseline_verdict(1) is None
