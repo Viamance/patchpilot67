@@ -1,0 +1,5 @@
+daytona
+openai
+python-dotenv
+streamlit
+pytest
