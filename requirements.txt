@@ -1,4 +1,5 @@
 daytona
+neo4j
 openai
 python-dotenv
 streamlit

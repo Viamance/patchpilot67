@@ -42,7 +42,8 @@ with st.sidebar:
         available_models.clear()
         st.rerun()
     st.divider()
-    st.caption("Daytona runs the code · Nosana proposes the fix · tests decide the verdict")
+    st.caption("Daytona runs the code · Neo4j maps the failure to the code · "
+               "Nosana proposes the fix · tests decide the verdict")
 
 # ---- the prepared fixture ----
 sources = core.load_fixture()
@@ -72,14 +73,23 @@ if run:
         st.caption(f"`{run.test_command}` · exit code {run.baseline_exit}")
         st.code(run.baseline_output or "(no output)", language="text")
     with after:
-        st.subheader("3. Rerun (after)")
+        st.subheader("4. Rerun (after)")
         if run.rerun_exit is None:
             st.caption("Not run")
         else:
             st.caption(f"`{run.test_command}` · exit code {run.rerun_exit} · same tests, unchanged")
             st.code(run.rerun_output or "(no output)", language="text")
 
-    st.subheader("2. AI proposal (suggested change)")
+    st.subheader("2. Graph context (Neo4j)")
+    st.caption(f"Status: {run.graph_status}")
+    if run.graph_query:
+        st.code(run.graph_query, language="sql")
+        if run.graph_rows:
+            st.table(run.graph_rows)
+        else:
+            st.caption("The query returned no rows.")
+
+    st.subheader("3. AI proposal (suggested change)")
     if run.diagnosis:
         st.markdown(f"**Diagnosis:** {run.diagnosis}")
         st.markdown(f"**Explanation:** {run.explanation}")
@@ -90,6 +100,8 @@ if run:
 
     with st.expander("Run evidence"):
         st.write({
+            "Run ID": run.run_id,
+            "Neo4j": run.graph_status,
             "Nosana model": run.model,
             "Daytona sandbox": run.sandbox_id,
             "Cleanup": run.cleanup,
